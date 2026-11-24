@@ -10,8 +10,8 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
   const go = (d: number) => setI((i + d + items.length) % items.length);
   return (
     <section aria-label="Client words" className="border-y border-line">
-      <div className="reveal mx-auto flex max-w-[1400px] flex-wrap items-end justify-between gap-10 px-5 py-24 md:px-8">
-        <figure key={t.id} className="rise m-0 min-w-0 flex-[1_1_640px]">
+      <div className="reveal mx-auto flex max-w-[1100px] flex-col items-center gap-10 px-5 py-24 text-center md:px-8">
+        <figure key={t.id} className="rise m-0 min-w-0">
           <blockquote className="m-0 text-[clamp(28px,3.2vw,46px)] leading-[1.2] tracking-[-0.025em]">“{t.quote}”</blockquote>
           <figcaption className="mt-7 text-sm text-muted">
             {t.name}
@@ -19,7 +19,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
           </figcaption>
         </figure>
         {items.length > 1 && (
-          <div className="flex items-center gap-4 text-[13px] text-muted">
+          <div className="flex items-center justify-center gap-4 text-[13px] text-muted">
             <span>
               {i + 1} / {items.length}
             </span>

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { siteUrl } from "@/lib/format";
 import { RevealObserver } from "@/components/RevealObserver";
@@ -23,32 +24,45 @@ export const metadata: Metadata = {
   },
 };
 
+// Instrument Sans, served from this site rather than Google Fonts so the page never
+// waits on a second server before it can paint.
+const instrument = localFont({
+  src: "./fonts/InstrumentSans.woff2",
+  weight: "400 700",
+  display: "swap",
+  variable: "--font-instrument",
+});
+
+const BOOT = `(function(){
+var d=document.documentElement;d.classList.add('js');
+setTimeout(function(){if(!d.hasAttribute('data-reveal'))d.classList.remove('js')},2500);
+var seen=false;try{seen=sessionStorage.getItem('shy-intro')==='1';sessionStorage.setItem('shy-intro','1')}catch(e){}
+var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function done(){window.__introDone=true;window.dispatchEvent(new Event('introdone'))}
+if(seen||calm){done();return}
+d.classList.add('intro-playing','intro-on');
+setTimeout(function(){d.classList.add('intro-leave');d.classList.remove('intro-playing');done()},2800);
+setTimeout(function(){d.classList.remove('intro-on','intro-leave')},4200);
+})();`;
+
 export const viewport: Viewport = {
   themeColor: "#F4F2EE",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={instrument.variable} suppressHydrationWarning>
       <head>
-        {/* Lets the scroll animations hide content only when JavaScript is running */}
-        <script
-          dangerouslySetInnerHTML={{
-            // Hide content for the scroll animations, but bring everything back after
-            // 2.5s if the animation script never starts (slow network, blocked scripts).
-            __html:
-              "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!d.hasAttribute('data-reveal'))d.classList.remove('js')},2500)",
-          }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"
-          rel="stylesheet"
-        />
+        {/* Runs before anything is painted:
+            1. Lets the scroll animations hide content only while JavaScript is running,
+               with a safety net that shows everything if the animation script never starts.
+            2. Plays the logo intro once per visit. Page animations wait until it lifts. */}
+        <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       </head>
       <body>
+        <div className="intro" aria-hidden="true">
+          <div className="intro-logo" />
+        </div>
         {children}
         <RevealObserver />
       </body>

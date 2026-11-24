@@ -16,6 +16,12 @@ export function SiteFooter({ settings, lead = "Dates for 2026 and 2027 are open"
         <footer className="mt-24 flex flex-col items-center border-t border-[#333] pt-10 text-center text-[13px] text-[#A9A49B]">
           <Logo tone="white" className="h-16 md:h-20" />
           <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2.5">
+            <Link className="u text-paper" href="/gallery">
+              Client gallery
+            </Link>
+            <Link className="u text-paper" href="/rates">
+              Rates
+            </Link>
             <a className="u text-paper" href={`https://instagram.com/${settings.instagram}`}>
               Instagram
             </a>

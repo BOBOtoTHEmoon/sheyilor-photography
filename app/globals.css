@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
   --color-paper: #f4f2ee;
   --color-paper-2: #eae7e1;
   --color-ink: #151515;
@@ -265,13 +265,57 @@ html.js .reveal-row.in > :not(.thumb) {
   transform: none;
 }
 
+/* Logo intro (first visit only). Shown from the very first paint, lifts away like a
+   curtain, and holds the page's own entrance animations until it does. */
+.intro {
+  display: none;
+}
+html.intro-on .intro {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-paper);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.25, 1);
+}
+.intro-logo {
+  width: min(70vw, 420px);
+  aspect-ratio: 1200 / 448;
+  background: url("/brand/logo-black.png") center / contain no-repeat;
+}
+html.intro-leave .intro {
+  clip-path: inset(0 0 100% 0);
+}
+html.intro-playing body {
+  overflow: hidden;
+}
+html.intro-playing .rise,
+html.intro-playing .wipe {
+  animation-play-state: paused;
+}
+
 /* Logo intro: the signature is uncovered left to right, like it's being written */
 @keyframes write {
-  from { clip-path: inset(0 100% 0 0); opacity: 0.2; }
-  to { clip-path: inset(0 0 0 0); opacity: 1; }
+  from { clip-path: inset(0 82% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
 }
 .intro-logo {
   animation: write 2.2s cubic-bezier(0.55, 0, 0.25, 1) both;
+}
+
+/* Phone menu: the sheet wipes down, then the links rise in one by one */
+@keyframes menu-in {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.menu {
+  animation: menu-in 0.8s cubic-bezier(0.65, 0, 0.25, 1) both;
+}
+.menu-item {
+  animation: up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 /* Collection list: thumbnail appears on hover */

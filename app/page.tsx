@@ -3,7 +3,6 @@ import { getPhotoCounts, getSiteData } from "@/lib/data";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Testimonials } from "@/components/Testimonials";
-import { Intro } from "@/components/Intro";
 
 export const revalidate = 60;
 
@@ -28,7 +27,6 @@ export default async function HomePage() {
 
   return (
     <main>
-      <Intro />
       <SiteHeader />
 
       {settings.hero_video_url ? (
@@ -86,15 +84,6 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
-          <div className="rise mt-3 flex justify-between gap-5 text-[13px] text-muted">
-            <span>{panels.map((p) => p.a.caption).join(" · ")}</span>
-            <span className="flex items-center gap-3">
-              {new Date().getFullYear()}
-              <span className="relative block h-px w-20 bg-ink/20">
-                <span className="progress absolute inset-0 bg-ink" />
-              </span>
-            </span>
-          </div>
         </section>
       )}
 
@@ -103,7 +92,7 @@ export default async function HomePage() {
           <h1 className="reveal m-0 max-w-[900px] text-[clamp(40px,5.2vw,76px)] font-medium leading-[1.02] tracking-[-0.035em]">
             {settings.headline}
           </h1>
-          <div className="reveal flex shrink-0 gap-3" style={stagger(2)}>
+          <div className="reveal flex w-full shrink-0 justify-center gap-3 md:w-auto" style={stagger(2)}>
             <Link className="btn" href="/book">
               Book a date
             </Link>
@@ -229,10 +218,10 @@ export default async function HomePage() {
 
       <Testimonials items={site.testimonials} />
 
-      <section className="mx-auto max-w-[1400px] px-5 py-24 md:px-8">
-        <Link href="/gallery" className="reveal flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <span className="text-lg text-ink-2">Had a shoot with us? Your photos are waiting in your private gallery.</span>
-          <span className="u text-lg font-semibold">Open your gallery →</span>
+      <section className="mx-auto max-w-[1400px] px-5 py-24 text-center md:px-8">
+        <p className="reveal m-0 text-lg text-ink-2">Had a shoot with us? Your photos are waiting in your private gallery.</p>
+        <Link href="/gallery" className="reveal btn btn-ghost mt-6" style={stagger(1)}>
+          Open your gallery
         </Link>
       </section>
 

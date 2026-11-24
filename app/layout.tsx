@@ -11,10 +11,15 @@ export const metadata: Metadata = {
   },
   description:
     "Lagos photographer for birthday portraits, weddings, fashion and events. See the work, check the rates and book your date online.",
+  // The share image and icons come from app/opengraph-image.jpg, app/icon.png and app/apple-icon.png
   openGraph: {
     type: "website",
     siteName: "Sheyilor Photography",
-    images: ["/images/glamour.jpg"],
+    locale: "en_NG",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@its_sheyilor",
   },
 };
 
@@ -27,7 +32,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Lets the scroll animations hide content only when JavaScript is running */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            // Hide content for the scroll animations, but bring everything back after
+            // 2.5s if the animation script never starts (slow network, blocked scripts).
+            __html:
+              "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!d.hasAttribute('data-reveal'))d.classList.remove('js')},2500)",
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}

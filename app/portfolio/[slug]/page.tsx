@@ -16,7 +16,6 @@ export async function generateMetadata(props: PageProps<"/portfolio/[slug]">): P
   return {
     title: `${c.name} photography in Lagos`,
     description: `${c.description} See ${c.name.toLowerCase()} photos by Sheyilor Photography and book your date online.`,
-    openGraph: c.cover_url ? { images: [c.cover_url] } : undefined,
   };
 }
 

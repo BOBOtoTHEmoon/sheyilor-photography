@@ -1,0 +1,323 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-paper: #f4f2ee;
+  --color-paper-2: #eae7e1;
+  --color-ink: #151515;
+  --color-ink-2: #4a4741;
+  --color-muted: #6b6760;
+  --color-faint: #8c877f;
+  --color-line: #d9d5ce;
+  --color-line-2: #e4e0d9;
+  --color-placeholder: #d8d3cb;
+  --color-owed: #8a4b12;
+}
+
+/* Built at the scale of 85% browser zoom on phones and 80% on desktop */
+html {
+  zoom: 0.85;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+@media (min-width: 768px) {
+  html {
+    zoom: 0.8;
+  }
+}
+body {
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+/* Inputs stay at 16px so phones don't zoom in when tapped */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Links that underline from left to right on hover */
+.u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s;
+}
+.u:hover {
+  background-size: 100% 1px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  transition: background 0.3s, color 0.3s;
+  cursor: pointer;
+}
+.btn:hover {
+  background: transparent;
+  color: var(--color-ink);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-light {
+  background: transparent;
+  color: var(--color-paper);
+  border-color: var(--color-paper);
+}
+.btn-light:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.field {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 0;
+  padding: 14px;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.25s;
+  font-family: inherit;
+}
+.field:focus {
+  border-color: var(--color-ink);
+}
+.field::placeholder {
+  color: var(--color-faint);
+}
+
+.opt {
+  border: 1px solid var(--color-line);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+}
+.opt:hover {
+  border-color: var(--color-ink);
+}
+.opt[aria-pressed="true"] {
+  background: #fff;
+  border-color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+
+/* Photos zoom gently on hover */
+.shot {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: var(--color-placeholder);
+}
+.shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  transition: transform 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.shot:hover img,
+a:hover .shot img {
+  transform: scale(1.04);
+}
+.arrow {
+  display: inline-block;
+  transition: transform 0.4s;
+}
+a:hover .arrow,
+button:hover .arrow {
+  transform: translateX(6px);
+}
+
+/* Hero: slow zoom with a crossfade between two photos per panel */
+@keyframes kb {
+  from { transform: scale(1); }
+  to { transform: scale(1.07); }
+}
+@keyframes xf {
+  0%, 40% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.kb {
+  animation: kb 14s ease-in-out infinite alternate;
+}
+.xf {
+  opacity: 0;
+  animation: xf 20s ease-in-out infinite, kb 14s ease-in-out infinite alternate;
+}
+.progress {
+  transform-origin: left;
+  animation: bar 10s linear infinite;
+}
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: up 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-2 {
+  animation-delay: 0.3s;
+}
+
+/* Hero panels wipe up one after another on load */
+@keyframes wipe {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.wipe {
+  animation: wipe 2s cubic-bezier(0.65, 0, 0.25, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Scroll reveals. Hidden only when JavaScript is running (html.js),
+   so the page is never blank if scripts fail. RevealObserver adds .in */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms), transform 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms);
+}
+html.js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Photos: uncovered from the bottom while the image settles from a slight zoom.
+   The clip sits on the <img>, not the wrapper, so the scroll watcher can still see the wrapper. */
+html.js .reveal-img {
+  background: transparent;
+}
+html.js .reveal-img img {
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.2);
+  transition: clip-path 1.8s cubic-bezier(0.65, 0, 0.25, 1) var(--d, 0ms), transform 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms);
+}
+html.js .reveal-img.in img {
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+}
+html.js .reveal-img.in:hover img,
+html.js a:hover .reveal-img.in img {
+  transform: scale(1.04);
+  transition: clip-path 1.8s cubic-bezier(0.65, 0, 0.25, 1), transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* List rows: the line draws across, then the text slides up */
+html.js .reveal-row {
+  border-top-color: transparent !important;
+  position: relative;
+}
+html.js .reveal-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 1px;
+  background: var(--color-line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.7s cubic-bezier(0.65, 0, 0.25, 1) var(--d, 0ms);
+}
+html.js .reveal-row.in::before {
+  transform: scaleX(1);
+}
+html.js .reveal-row > :not(.thumb) {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--d, 0ms) + 350ms),
+    transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--d, 0ms) + 350ms);
+}
+html.js .reveal-row.in > :not(.thumb) {
+  opacity: 1;
+  transform: none;
+}
+
+/* Logo intro: the signature is uncovered left to right, like it's being written */
+@keyframes write {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.2; }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.intro-logo {
+  animation: write 2.2s cubic-bezier(0.55, 0, 0.25, 1) both;
+}
+
+/* Collection list: thumbnail appears on hover */
+.idx {
+  position: relative;
+  transition: padding 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.idx:hover {
+  padding-left: 12px;
+}
+.idx .thumb {
+  position: absolute;
+  right: 120px;
+  top: 50%;
+  width: 150px;
+  height: 190px;
+  transform: translateY(-50%) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  z-index: 2;
+}
+.idx:hover .thumb {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kb,
+  .xf,
+  .rise,
+  .wipe,
+  .progress {
+    animation: none !important;
+  }
+  .xf {
+    opacity: 0;
+  }
+  html.js .reveal,
+  html.js .reveal-img,
+  html.js .reveal-img img,
+  html.js .reveal-row::before,
+  html.js .reveal-row > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}

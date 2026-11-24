@@ -1,0 +1,211 @@
+import type { SiteData } from "./types";
+
+// Built-in content so the site runs before Supabase is connected.
+// Keep in step with supabase/seed.sql.
+
+const portraitTerms = [
+  { title: "Payment validates booking", body: "Your date and session slot are reserved once payment is confirmed." },
+  { title: "Delivery time", body: "Photos are delivered in 2 working days. Express delivery costs ₦35,000 extra." },
+  { title: "Extra selections", body: "Retouched images beyond your package are ₦15,000 each." },
+  { title: "Logistics", body: "Extra charges apply to all outdoor and on-location sessions outside Sheyilor Studio." },
+  { title: "Lateness", body: "After 30 minutes of lateness, a fee of ₦10,000 per hour applies." },
+  { title: "Refunds", body: "No refunds after 48 hours of booking. You can transfer your shoot to someone else who accepts these terms." },
+];
+
+const st = (slug: string, name: string, tagline: string, sort: number, extra: Partial<SiteData["sessionTypes"][number]> = {}) => ({
+  id: `st-${slug}`,
+  slug,
+  name,
+  tagline,
+  description: "",
+  rate_card_url: null,
+  notes: [] as string[],
+  terms: [] as { title: string; body: string }[],
+  has_logistics: false,
+  has_express: false,
+  full_day: false,
+  ready: false,
+  sort,
+  ...extra,
+});
+
+type F = SiteData["fields"][number];
+const field = (type: string, sort: number, label: string, field_type: F["field_type"], role: F["role"] = null, required = true, placeholder: string | null = null, options: string[] = []): F => ({
+  id: `f-${type}-${sort}`,
+  session_type_id: `st-${type}`,
+  label,
+  field_type,
+  role,
+  options,
+  placeholder,
+  required,
+  sort,
+});
+
+const contact = (type: string, nameLabel = "Full name", emailLabel = "Email", phoneLabel = "Phone or WhatsApp") => [
+  field(type, 1, nameLabel, "text", "name"),
+  field(type, 2, emailLabel, "email", "email"),
+  field(type, 3, phoneLabel, "tel", "phone"),
+];
+
+export const defaults: SiteData = {
+  live: false,
+  settings: {
+    business_name: "Sheyilor Photography",
+    phone: "+234 816 797 6266",
+    whatsapp: "2348167976266",
+    whatsapp_message: "Hello Sheyilor, I found you on your website and I'd like to ask about a shoot.",
+    email: "sheyilorphotography@gmail.com",
+    instagram: "sheyilor_",
+    tiktok: "sheyilor_",
+    x_handle: "its_sheyilor",
+    location: "Lagos, Nigeria",
+    headline: "Weddings, portraits and fashion, photographed in Lagos.",
+    about_title: "I'm Sheyilor. I photograph people at their best, on the days that matter most to them.",
+    about_body:
+      "From birthdays and celebrations to fashion lookbooks and weddings, every shoot is planned around you. Portrait photos are retouched and delivered in 2 working days, straight to your own private gallery.",
+    deposit_percent: 70,
+    express_fee: 35000,
+    extra_image_fee: 15000,
+    lateness_fee: 10000,
+    gallery_days: 90,
+    training_contact: "Fisayo · 0813 310 7318",
+    hero_video_url: null,
+    hero_poster_url: null,
+  },
+  sessionTypes: [
+    st("portrait", "Portrait session", "Birthday, celebration, glamour, editorial and family portraits", 1, {
+      description: "Studio portraits at Sheyilor Studio, or on location anywhere in Lagos.",
+      notes: [
+        "Prices are for sessions at Sheyilor Studio. Logistics are extra for anywhere else.",
+        "Photos are delivered in 2 working days.",
+        "Extra images are ₦15,000 each.",
+        "A lateness fee of ₦10,000 per hour applies after 30 minutes.",
+        "Payment confirms your booking.",
+      ],
+      terms: portraitTerms,
+      has_logistics: true,
+      has_express: true,
+      ready: true,
+    }),
+    st("wedding", "Wedding", "Full coverage for 2026 and 2027, with optional pre-wedding shoots", 2, { full_day: true }),
+    st("event", "Event coverage", "Parties, launches and celebrations", 3),
+    st("fashion", "Fashion collection", "Lookbooks and campaigns for brands and designers", 4),
+    st("convocation", "Convocation", "Graduation and call to bar portraits", 5),
+    st("training", "Photography training", "Programs for beginners and growing photographers", 6),
+  ],
+  packages: [
+    {
+      id: "pk-portrait",
+      session_type_id: "st-portrait",
+      name: "Portraits",
+      subtitle: "For every kind of solo portrait",
+      price: 100000,
+      per_outfit: true,
+      images_included: 4,
+      included: [
+        { title: "1 outfit or look", detail: "One complete styled outfit or look for your studio session." },
+        { title: "4 edited images", detail: "High-resolution retouched photos, delivered in 2 working days." },
+        { title: "45-minute studio session", detail: "At Sheyilor Studio, with lighting set up for you and coaching throughout." },
+        { title: "Extra images", detail: "More retouched photos at ₦15,000 each." },
+      ],
+      highlight: false,
+      sort: 1,
+    },
+    {
+      id: "pk-family",
+      session_type_id: "st-portrait",
+      name: "Family or group",
+      subtitle: "More than one person in the photo",
+      price: 150000,
+      per_outfit: true,
+      images_included: 5,
+      included: [
+        { title: "Families, couples and teams", detail: "For family, couple, group or team portraits." },
+        { title: "5 edited images", detail: "Retouched photos of the whole group, delivered in 2 working days." },
+        { title: "1-hour studio session per outfit", detail: "Custom staging and help arranging everyone in the shot." },
+        { title: "Extra images", detail: "More retouched photos at ₦15,000 each." },
+      ],
+      highlight: true,
+      sort: 2,
+    },
+  ],
+  logistics: [
+    { id: "lf-1", session_type_id: "st-portrait", kind: "outdoor", area: "Mainland", fee: 40000, sort: 1 },
+    { id: "lf-2", session_type_id: "st-portrait", kind: "outdoor", area: "Ikoyi / Lekki", fee: 50000, sort: 2 },
+    { id: "lf-3", session_type_id: "st-portrait", kind: "outdoor", area: "Lekki 2 / Ajah", fee: 70000, sort: 3 },
+    { id: "lf-4", session_type_id: "st-portrait", kind: "home", area: "Mainland", fee: 70000, sort: 4 },
+    { id: "lf-5", session_type_id: "st-portrait", kind: "home", area: "VI / Ikoyi", fee: 85000, sort: 5 },
+    { id: "lf-6", session_type_id: "st-portrait", kind: "home", area: "Lekki / Lekki 2", fee: 105000, sort: 6 },
+  ],
+  extras: [
+    { id: "ex-1", session_type_id: "st-portrait", name: "Extra edited image", price: 15000, unit: "each", sort: 1 },
+    { id: "ex-2", session_type_id: "st-portrait", name: "Express delivery", price: 35000, unit: "", sort: 2 },
+    { id: "ex-3", session_type_id: "st-portrait", name: "Lateness, after 30 minutes", price: 10000, unit: "per hour", sort: 3 },
+  ],
+  fields: [
+    ...contact("portrait", "Full name", "Email (for your invoice)"),
+    field("portrait", 4, "Type of portrait", "choice", null, true, null, ["Birthday", "Celebration", "Glamour", "Editorial", "Family or group", "Headshot", "Other"]),
+    field("wedding", 1, "Couple name", "text", "name", true, "Tolu & Dami"),
+    field("wedding", 2, "Wedding hashtag", "text", null, false, "#TD2026"),
+    field("wedding", 3, "Email", "email", "email"),
+    field("wedding", 4, "Bride contact", "tel", "phone"),
+    field("wedding", 5, "Wedding location", "text", null, true, "Venue and city"),
+    field("wedding", 6, "Pre-wedding shoot date", "date", null, false),
+    field("wedding", 7, "Pre-wedding shoot time", "time", null, false),
+    field("wedding", 8, "Pre-wedding outfits", "number", null, false),
+    ...contact("event"),
+    field("event", 4, "Type of event", "text", null, true, "e.g. 50th birthday"),
+    field("event", 5, "Event location", "text", null, true, "Venue and city"),
+    ...contact("fashion", "Name or brand"),
+    field("fashion", 4, "Number of outfits", "number"),
+    field("fashion", 5, "Location", "text", null, true, "Studio or your location"),
+    ...contact("convocation"),
+    field("convocation", 4, "School or institution", "text"),
+    field("convocation", 5, "Number of outfits", "number"),
+    ...contact("training"),
+    field("training", 4, "Program you are interested in", "text"),
+  ],
+  collections: [
+    { id: "c-birthday", slug: "birthday", name: "Birthday", description: "Milestone birthday portraits, styled your way, at the studio or on location.", cta_label: "Book a birthday shoot", session_type_slug: "portrait", cover_url: "/images/glamour.jpg", sort: 1 },
+    { id: "c-celebrity", slug: "celebrity", name: "Celebrity", description: "Portraits for artists, creators and public figures.", cta_label: "Book a portrait session", session_type_slug: "portrait", cover_url: "/images/solo-editorial.jpg", sort: 2 },
+    { id: "c-weddings", slug: "weddings", name: "Weddings", description: "The vows, the dancing and every small moment in between.", cta_label: "Book your wedding date", session_type_slug: "wedding", cover_url: null, sort: 3 },
+    { id: "c-pre-wedding", slug: "pre-wedding", name: "Pre wedding", description: "Relaxed couple shoots before the big day.", cta_label: "Book a pre-wedding shoot", session_type_slug: "wedding", cover_url: null, sort: 4 },
+    { id: "c-fashion", slug: "fashion", name: "Fashion", description: "Lookbooks and campaigns for brands and designers.", cta_label: "Book a fashion shoot", session_type_slug: "fashion", cover_url: null, sort: 5 },
+    { id: "c-maternity", slug: "maternity", name: "Maternity", description: "Calm, beautiful sessions celebrating motherhood.", cta_label: "Book a maternity shoot", session_type_slug: "portrait", cover_url: null, sort: 6 },
+    { id: "c-family", slug: "family", name: "Family", description: "Portraits of the whole family, little ones included.", cta_label: "Book a family shoot", session_type_slug: "portrait", cover_url: null, sort: 7 },
+    { id: "c-convocation", slug: "convocation", name: "Convocation", description: "Graduation portraits on campus or in the studio.", cta_label: "Book a convocation shoot", session_type_slug: "convocation", cover_url: null, sort: 8 },
+    { id: "c-call-to-bar", slug: "call-to-bar", name: "Call to bar", description: "Portraits for the day you are called to the bar.", cta_label: "Book a call to bar shoot", session_type_slug: "convocation", cover_url: null, sort: 9 },
+    { id: "c-events", slug: "events", name: "Events", description: "Candid coverage of parties, launches and celebrations.", cta_label: "Book event coverage", session_type_slug: "event", cover_url: null, sort: 10 },
+  ],
+  home: [
+    { id: "h1", section: "hero", position: 1, image_url: "/images/studio-portrait.jpg", alt: "Woman in a red dress seated against a red backdrop", caption: "Studio portrait", collection_slug: "birthday" },
+    { id: "h2", section: "hero", position: 2, image_url: "/images/celebration.jpg", alt: "Woman in a green lace outfit and gele holding a clutch", caption: "Celebration", collection_slug: "birthday" },
+    { id: "h3", section: "hero", position: 3, image_url: "/images/glamour.jpg", alt: "Woman in a lilac gown on a staircase under a chandelier", caption: "Glamour", collection_slug: "birthday" },
+    { id: "h4", section: "hero", position: 4, image_url: "/images/solo-editorial.jpg", alt: "Woman in a pink gown with a fan of light behind her", caption: "Solo editorial", collection_slug: "celebrity" },
+    { id: "h5", section: "hero", position: 5, image_url: "/images/studio-classic.jpg", alt: "Woman in a purple lace dress seated on a stool", caption: "Studio classic", collection_slug: "celebrity" },
+    { id: "h6", section: "hero", position: 6, image_url: "/images/art-direction.jpg", alt: "Woman in a white hijab and gown beside a crescent moon", caption: "Art direction", collection_slug: "celebrity" },
+    { id: "f1", section: "featured", position: 1, image_url: "/images/solo-editorial.jpg", alt: "Woman in a pink gown with a fan of light behind her", caption: "Solo editorial", collection_slug: "celebrity" },
+    { id: "f2", section: "featured", position: 2, image_url: "/images/art-direction.jpg", alt: "Woman in a white hijab and gown beside a crescent moon", caption: "Art direction", collection_slug: "celebrity" },
+    { id: "f3", section: "featured", position: 3, image_url: "/images/studio-classic.jpg", alt: "Woman in a purple lace dress seated on a stool", caption: "Studio classic", collection_slug: "celebrity" },
+    { id: "f4", section: "featured", position: 4, image_url: "/images/celebration.jpg", alt: "Woman in a green lace outfit and gele holding a clutch", caption: "Celebration", collection_slug: "birthday" },
+    { id: "f5", section: "featured", position: 5, image_url: "/images/glamour.jpg", alt: "Woman in a lilac gown under a chandelier", caption: "Glamour", collection_slug: "birthday" },
+  ],
+  testimonials: [
+    { id: "t1", name: "Adebayo Ogunleye", context: "Wedding", quote: "He captured every special moment of our wedding with such artistry and emotion.", sort: 1 },
+    { id: "t2", name: "Chioma Okonkwo", context: "Portrait session", quote: "I was nervous at first, but he made me feel completely at ease.", sort: 2 },
+  ],
+};
+
+export const defaultPhotos: Record<string, { url: string; alt: string }[]> = {
+  birthday: [
+    { url: "/images/glamour.jpg", alt: "Woman in a lilac gown on a staircase under a chandelier" },
+    { url: "/images/celebration.jpg", alt: "Woman in a green lace outfit and gele holding a clutch" },
+    { url: "/images/studio-portrait.jpg", alt: "Woman in a red dress seated against a red backdrop" },
+  ],
+  celebrity: [
+    { url: "/images/solo-editorial.jpg", alt: "Woman in a pink gown with a fan of light behind her" },
+    { url: "/images/art-direction.jpg", alt: "Woman in a white hijab and gown beside a crescent moon" },
+    { url: "/images/studio-classic.jpg", alt: "Woman in a purple lace dress seated on a stool" },
+  ],
+};

@@ -51,6 +51,12 @@ select id, 'Family or group', 'More than one person in the photo', 150000, true,
  ]'::jsonb, true, 2
 from session_types where slug = 'portrait';
 
+-- Booking page photos (change them any time in the dashboard)
+update session_types set cover_url = v.url
+from (values ('portrait','/images/studio-portrait.jpg'),('wedding','/images/celebration.jpg'),('event','/images/studio-classic.jpg'),
+             ('fashion','/images/art-direction.jpg'),('convocation','/images/solo-editorial.jpg'),('training','/images/glamour.jpg')) as v(slug, url)
+where session_types.slug = v.slug;
+
 -- Portrait logistics and extras ----------------------------------------------------
 insert into logistics_fees (session_type_id, kind, area, fee, sort)
 select st.id, v.kind, v.area, v.fee, v.sort

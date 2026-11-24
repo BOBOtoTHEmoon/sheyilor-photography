@@ -31,6 +31,7 @@ export type SessionType = {
   tagline: string;
   description: string;
   rate_card_url: string | null;
+  cover_url: string | null;
   notes: string[];
   terms: Term[];
   has_logistics: boolean;

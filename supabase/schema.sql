@@ -42,6 +42,7 @@ create table if not exists session_types (
   tagline text not null default '',
   description text not null default '',
   rate_card_url text,
+  cover_url text,                               -- photo shown on the booking page
   notes text[] not null default '{}',
   terms jsonb not null default '[]',            -- [{ "title": "", "body": "" }]
   has_logistics boolean not null default false, -- outdoor / home fees apply
@@ -314,3 +315,4 @@ end $$;
 -- Safe to re-run on an existing database
 alter table settings add column if not exists hero_video_url text;
 alter table settings add column if not exists hero_poster_url text;
+alter table session_types add column if not exists cover_url text;

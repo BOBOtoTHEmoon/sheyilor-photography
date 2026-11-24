@@ -322,7 +322,7 @@ export function BookingForm({ site, availability, initialType, initialPackage }:
                           type="button"
                           key={t}
                           disabled={!day || takenTimes.has(t)}
-                          className="opt h-[52px] text-center text-[15px] disabled:cursor-not-allowed disabled:opacity-40"
+                          className="opt flex h-[52px] items-center justify-center text-center text-[15px] disabled:cursor-not-allowed disabled:opacity-40"
                           aria-pressed={time === t}
                           onClick={() => setTime(t)}
                         >

@@ -16,14 +16,14 @@ export default async function BookPage(props: PageProps<"/book">) {
   const [site, availability] = await Promise.all([getSiteData(), getAvailability()]);
   return (
     <main className="min-h-screen">
-      <header className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-5 py-5 md:px-8">
-        <Logo />
-        <Link className="u text-sm" href="/">
-          ← Back to site
+      <header className="mx-auto grid max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-3 md:px-8 md:py-5">
+        <Link className="u justify-self-start text-[15px] font-medium" href="/">
+          Back
         </Link>
+        <Logo />
+        <span />
       </header>
-      <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-12 md:px-8 md:pt-14">
-        <h1 className="m-0 text-[clamp(44px,6vw,88px)] font-medium leading-none tracking-[-0.045em]">Book a date</h1>
+      <div className="mx-auto max-w-[1400px] px-5 pb-0 pt-6 md:px-8 md:pb-28 md:pt-12">
         <BookingForm
           site={site}
           availability={availability}
